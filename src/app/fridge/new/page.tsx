@@ -1,5 +1,6 @@
 "use client";
 
+import { generateItemInfoByOpenAI } from "@/lib/openai";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -19,8 +20,43 @@ export default function FridgeNew() {
     router.push("/fridge");
   };
 
+  const [imageBase64, setImageBase64] = useState("");
+  const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      setImageBase64(reader.result as string);
+
+      const response = await fetch("/api/openai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ textPrompt: reader.result }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log(result.text);
+      const resultTexts = result.text.split(",");
+      console.log(resultTexts);
+      setName(resultTexts[0]);
+      setExpirationDate(resultTexts[1]);
+      console.log(expirationDate);
+    };
+
+    reader.readAsDataURL(file);
+  };
+
   return (
     <form onSubmit={(e) => e.preventDefault()}>
+      <input type="file" name="image" onChange={uploadImage} />
       <input
         name="name"
         type="text"
