@@ -13,6 +13,5 @@ export const authOptions: NextAuthOptions = {
 };
 
 export const getServerSession = async () => {
-  console.log("DEBUG: getServerSession");
   return originalGetServerSession(authOptions);
 };
