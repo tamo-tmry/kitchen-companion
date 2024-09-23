@@ -17,6 +17,7 @@ export default async function Fridge() {
           <CirclePlus className="h-4 w-4" />
         </Link>
       </Button>
+      <Button>ボタン</Button>
     </>
   );
 }
