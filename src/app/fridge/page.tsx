@@ -11,7 +11,7 @@ export default async function Fridge() {
 
   return (
     <>
-      <FridgeList />
+      <FridgeList userId={session.user.id} />
       <Button asChild>
         <Link href="/fridge/new">
           <CirclePlus className="h-4 w-4" />

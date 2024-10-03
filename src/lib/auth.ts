@@ -9,6 +9,21 @@ export const authOptions: NextAuthOptions = {
       clientSecret: process.env.GOOGLE_SECRET || "",
     }),
   ],
+  callbacks: {
+    async jwt({ token, account, profile }) {
+      if (account && profile?.sub) {
+        token.accessToken = account.access_token;
+        token.id = profile.sub;
+      }
+      return token;
+    },
+    async session({ session, token, user }) {
+      if (session.user) {
+        session.user.id = token.sub;
+      }
+      return session;
+    },
+  },
 };
 
 export const getServerSession = async () => {
