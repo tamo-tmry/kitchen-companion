@@ -4,7 +4,8 @@ import { redirect } from "next/navigation";
 
 export default async function FridgeNew() {
   const session = await getServerSession();
-  if (!session) redirect("/login");
+  const userId = session?.user?.id;
+  if (!userId) redirect("/login");
 
-  return <FridgeForm userId={session.user.id} />;
+  return <FridgeForm userId={userId} />;
 }
