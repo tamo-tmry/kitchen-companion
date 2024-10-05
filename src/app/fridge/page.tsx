@@ -7,11 +7,12 @@ import { CirclePlus } from "lucide-react";
 
 export default async function Fridge() {
   const session = await getServerSession();
-  if (!session) redirect("/login");
+  const userId = session?.user?.id;
+  if (!userId) redirect("/login");
 
   return (
     <>
-      <FridgeList />
+      <FridgeList userId={userId} />
       <Button asChild>
         <Link href="/fridge/new">
           <CirclePlus className="h-4 w-4" />

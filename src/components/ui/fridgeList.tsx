@@ -1,5 +1,3 @@
-"use client";
-
 type FridgeItemType = {
   name: string;
   expirationDate: string;
@@ -15,13 +13,30 @@ import {
 } from "@/components/ui/table";
 import { format } from "@formkit/tempo";
 
-export default function FridgeList() {
-  const fridgeItemJSON = localStorage.getItem("fridgeItems");
-  if (!fridgeItemJSON) {
-    return <p>何もないよ</p>;
+const getItems = async (userId: string) => {
+  const response = await fetch(
+    `${process.env.BASE_URL}/api/item?userId=${userId}`,
+    {
+      method: "GET",
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error("Network response was not ok");
   }
 
-  const items = JSON.parse(fridgeItemJSON);
+  return await response.json();
+};
+
+type FridgeListProps = {
+  userId: string;
+};
+
+export default async function FridgeList({ userId }: FridgeListProps) {
+  const items = await getItems(userId);
+  if (!items.length) {
+    return <p>何もないよ</p>;
+  }
 
   return (
     <Table>
